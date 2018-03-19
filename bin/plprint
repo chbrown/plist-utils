@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+if [[ "$@" =~ '--help' ]]; then
+  >&2 cat <<HELP
+Usage: plprint Config.plist
+       <Config.plist plprint
+
+Convert a file in Apple's "property list format" into XML,
+then pretty print with Libxml's xmllint,
+and NFC-normalize with ICU's uconv.
+HELP
+  exit 1
+fi
+
+plutil -convert xml1 -o - "${@--}" | xmllint --format - | uconv -x any-nfc
