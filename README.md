@@ -11,7 +11,7 @@
 * `pljson`
 
   Simplify the XML of the given plist file with XMLStarlet,
-  replacing <data> and <date> elements with <string> elements,
+  replacing `<data>` and `<date>` elements with `<string>` elements,
   and convert to JSON.
 
       pljson Config.plist
