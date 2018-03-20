@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+usage() {
+  >&2 cat <<HELP
+Usage: $(basename "$0") plist.xml [plist.json [bin.plist [...]]] [-v|--verbose] [-h|--help]
+       <plist.xml $(basename "$0") [...]
+
+Simplify the XML of the given plist file with XMLStarlet,
+replacing <data> and <date> elements with <string> elements,
+and convert to JSON.
+HELP
+}
+
+INPUTS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v|--verbose)
+      >&2 printf 'Entering debug (verbose) mode.\n'
+      set -x
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      INPUTS+=("$1")
+      ;;
+  esac
+  shift
+done
+
+# Read from /dev/stdin if no arguments are provided
+if [[ ${#INPUTS[@]} -eq 0 ]]; then
+  INPUTS=(-)
+fi
+
+## line-by-line description of pipeline
+# plutil: ensure all plists are converted to plain Property List XML
+# xmlstarlet ed: use XMLStarlet Toolkit's 'edit' command to...
+#   -u: update the contents of <data> elements by deleting all TAB/CR/NL/SPACE's
+#   -r: rename <data> to <string>
+#   -r: rename <date> to <string>
+# plutil: convert to JSON format (now that we've removed JSON-incompatible types)
+
+plutil -convert xml1 -o - "${INPUTS[@]}" \
+| xmlstarlet ed \
+    -u //data -x $'translate(., "\t\r\n ", "")' \
+    -r //data -v string \
+    -r //date -v string \
+| plutil -convert json -o - -
