@@ -1,14 +1,38 @@
 #!/usr/bin/env bash
-if [[ "$@" =~ '--help' ]]; then
+usage() {
   >&2 cat <<HELP
-Usage: plprint Config.plist
-       <Config.plist plprint
+Usage: $(basename "$0") plist.xml [plist.json [bin.plist [...]]] [-v|--verbose] [-h|--help]
+       <plist.xml $(basename "$0") [...]
 
 Convert a file in Apple's "property list format" into XML,
 then pretty print with Libxml's xmllint,
 and NFC-normalize with ICU's uconv.
 HELP
-  exit 1
+}
+
+INPUTS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v|--verbose)
+      >&2 printf 'Entering debug (verbose) mode.\n'
+      set -x
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      INPUTS+=("$1")
+      ;;
+  esac
+  shift
+done
+
+# Read from /dev/stdin if no arguments are provided
+if [[ ${#INPUTS[@]} -eq 0 ]]; then
+  INPUTS=(-)
 fi
 
-plutil -convert xml1 -o - "${@--}" | xmllint --format - | uconv -x any-nfc
+plutil -convert xml1 -o - "${INPUTS[@]}" \
+| xmllint --format - \
+| uconv -x any-nfc
