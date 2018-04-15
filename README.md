@@ -49,6 +49,7 @@ Pipeline components:
 5. [`mlr`](https://johnkerl.org/miller/doc/):
    Read in JSON and output whitespace-aligned tabular output, sorting by descending RSSI.
    RSSI ranges from -∞ (or maybe -100) to 0.
+
    | RSSI | Description       |
    |-----:|:------------------|
    |    0 | impossibly strong |
