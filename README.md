@@ -28,11 +28,11 @@ The `-x` option produces XML that contains a _lot_ more information in structure
 Using `pljson` and a few other commands,
 we can sort the available networks with strongest (largest RSSI) connections first:
 
-      airport -s -x \
-      | iconv -f macroman -t UTF-8 \
-      | pljson \
-      | jq -c '.[] | {SSID_STR,BSSID,RSSI,NOISE,CHANNEL,CHANNEL_FLAGS,CAPABILITIES}' \
-      | mlr --ijson --opprint sort -nr RSSI
+    airport -s -x \
+    | iconv -f macroman -t UTF-8 \
+    | pljson \
+    | jq -c '.[] | {SSID_STR,BSSID,RSSI,NOISE,CHANNEL,CHANNEL_FLAGS,CAPABILITIES}' \
+    | mlr --ijson --opprint sort -nr RSSI
 
 Pipeline components:
 
@@ -47,8 +47,8 @@ Pipeline components:
 4. [`jq`](https://stedolan.github.io/jq/):
    Flatten the top-level array and select just a few fields from each network dictionary.
 5. [`mlr`](https://johnkerl.org/miller/doc/):
-   Read in JSON and output whitespace-aligned tabular output, sorting by descending RSSI.
-   RSSI ranges from -∞ (or maybe -100) to 0.
+   Read in JSON and output whitespace-aligned tabular output, sorted by descending RSSI.
+   RSSI ranges from -100 (weakest) to 0 (strongest).
 
    | RSSI | Description       |
    |-----:|:------------------|
