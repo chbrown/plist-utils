@@ -1,5 +1,11 @@
 # plist-utils
 
+Install with [GNU Stow](https://www.gnu.org/software/stow/):
+
+    git clone https://github.com/chbrown/plist-utils
+    cd plist-utils
+    stow -t /usr/local/bin bin
+
 
 ### `plprint`
 
