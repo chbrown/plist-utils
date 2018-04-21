@@ -31,7 +31,7 @@ we can sort the available networks with strongest (largest RSSI) connections fir
     airport -s -x \
     | iconv -f macroman -t UTF-8 \
     | pljson \
-    | jq -c '.[] | {SSID_STR,BSSID,RSSI,NOISE,CHANNEL,CHANNEL_FLAGS,CAPABILITIES}' \
+    | jq -c '.[] | {SSID_STR,BSSID,RSSI,CHANNEL,CHANNEL_FLAGS,CAPABILITIES}' \
     | mlr --ijson --opprint sort -nr RSSI
 
 Pipeline components:
