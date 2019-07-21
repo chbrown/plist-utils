@@ -48,4 +48,5 @@ plutil -convert xml1 -o - "${INPUTS[@]}" \
     -u //data -x $'translate(., "\t\r\n ", "")' \
     -r //data -v string \
     -r //date -v string \
+    -r //integer -v string \
 | plutil -convert json -o - -
