@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  >&2 cat <<HELP
+Usage: $(basename "$0") [plist1 [plist2 [...]]] [-v|--verbose] [-h|--help]
+
+Convert each of the specified Apple Property List files to XML in-place,
+preserving file timestamps and permissions.
+HELP
+}
+
+FILES=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v|--verbose)
+      >&2 printf 'Entering debug (verbose) mode.\n'
+      set -x
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      FILES+=("$1")
+      ;;
+  esac
+  shift
+done
+
+TMPDIR=$(mktemp -d)
+
+for FILE in "${FILES[@]}"; do
+  TMPFILE=$TMPDIR/$(basename "$FILE")
+  plutil -convert xml1 "$FILE" -o "$TMPFILE"
+  # copy owner user and group from FILE to TMPFILE (probably already the same)
+  chown "$(stat -f %u:%g "$FILE")" "$TMPFILE"
+  # copy birth, access, and modifications times from FILE to TMPFILE (usually different)
+  touch -r "$FILE" "$TMPFILE"
+  # copy permissions from FILE to TMPFILE (sometimes different)
+  chmod "$(stat -f %p "$FILE")" "$TMPFILE"
+
+  # replace original file with new temporary file
+  mv "$TMPFILE" "$FILE"
+done
