@@ -25,6 +25,14 @@ and convert to JSON.
     pljson Config.plist
 
 
+### `plxml`
+
+Convert each of the specified Apple Property List files to `XML` in-place,
+preserving file timestamps and permissions.
+
+    plxml settings.bin.plist
+
+
 ## Recipes
 
 The macOS `airport` utility has a scan option, `-s`,
