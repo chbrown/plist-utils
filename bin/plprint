@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 usage() {
   >&2 cat <<HELP
 Usage: $(basename "$0") plist.xml [plist.json [bin.plist [...]]] [-v|--verbose] [-h|--help]
