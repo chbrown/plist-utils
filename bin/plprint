@@ -35,6 +35,11 @@ if [[ ${#INPUTS[@]} -eq 0 ]]; then
   INPUTS=(-)
 fi
 
+if ! command -v uconv >/dev/null 2>&1; then
+  >&2 printf '"uconv" not found! It is a binary provided by ICU (http://site.icu-project.org/).\n'
+  >&2 printf 'You may need to "brew install icu4c" (or similar) and ensure that "uconv" is available on your PATH.\n'
+fi
+
 plutil -convert xml1 -o - "${INPUTS[@]}" \
 | xmllint --format - \
 | uconv -x any-nfc
